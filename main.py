@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 import time
 import re
+import os
 
 URL = 'https://zastavok.net/1920x1080/'
 HOST = 'https://zastavok.net'
@@ -46,10 +47,21 @@ def parsing():
             if html_link_content.ok:
                 pic_link = get_pic(html_link_content.text)
                 r = requests.get(pic_link)
-                d = r.headers['content-disposition']
-                file_name = 'pics/' + re.findall("filename=(.+)", d)[0].replace('"', '')
-                urlretrieve(pic_link, file_name)
-                print(f'Изображение {file_name} сохранено успешно.')
+                try:
+                    d = r.headers['content-disposition']
+                except:
+                    print('Достигнут лимит скачивания на этом IP.')
+                    break
+                file_name = re.findall("filename=(.+)", d)[0].replace('"', '')
+                try:
+                    os.mkdir('pics/')
+                except:
+                    pass
+                if file_name not in os.listdir(path='pics/'):
+                    urlretrieve(pic_link, 'pics/' + file_name)
+                    print(f'Изображение {file_name} сохранено успешно.')
+                else:
+                    print(f'Изображение {file_name} уже было скачано.')
                 time.sleep(3)
             else:
                 print('Сайт не отвечает')
