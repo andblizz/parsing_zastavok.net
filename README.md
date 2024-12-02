@@ -1,0 +1,1 @@
+Parsing_Zastavok.net is a Python script for scraping wallpapers from Zastavok.net. The script efficiently retrieves high-quality images from specified categories or pages on the website and saves them locally.
