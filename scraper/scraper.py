@@ -48,8 +48,10 @@ def scrape_images(start_page, end_page, output_dir):
             else:
                 print(f"Skipping image page {link}.")
 
-    print(f"Total images to download: {len(pic_urls)}")
-
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        for pic_url in pic_urls:
-            executor.submit(download_image, pic_url, output_dir)
+        futures = [executor.submit(download_image, pic_url, output_dir) for pic_url in pic_urls]
+        for future in futures:
+            try:
+                future.result()
+            except Exception as e:
+                print(f"Error in task {future.name}: {e}")

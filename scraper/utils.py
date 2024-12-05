@@ -1,6 +1,6 @@
 import random
 import requests
-from .settings import USER_AGENTS, PROXIES
+from .settings import USER_AGENTS, PROXIES, TIMEOUT
 import os
 import re
 
@@ -9,7 +9,7 @@ def get_html(url, params=None):
     headers = {'User-Agent': random.choice(USER_AGENTS)}
     proxy = {'http': random.choice(PROXIES)} if PROXIES else None
     try:
-        response = requests.get(url, headers=headers, params=params, timeout=10, proxies=proxy)
+        response = requests.get(url, headers=headers, params=params, proxies=proxy, timeout=TIMEOUT)
         response.encoding = 'utf-8'
         response.raise_for_status()
         return response

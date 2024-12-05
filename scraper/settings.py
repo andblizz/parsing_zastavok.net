@@ -8,9 +8,11 @@ USER_AGENTS = [
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)"
     " Chrome/91.0.4472.124 Safari/537.36",
 ]
-DELAY_RANGE = (3, 9)
+DELAY_RANGE = (0, 0)
+TIMEOUT = 1
 MAX_WORKERS = 5
 DEFAULT_OUTPUT_DIR = 'pics/'
 DEFAULT_START_PAGE = 1
 DEFAULT_END_PAGE = 1
 PROXIES = []
+

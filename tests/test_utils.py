@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
+from scraper.settings import TIMEOUT
 from scraper.utils import get_html, download_image, requests
 import os
 
@@ -21,8 +22,8 @@ class TestModule(unittest.TestCase):
         self.assertEqual(result, mock_response)
         mock_requests_get.assert_called_once_with(
             url, headers={'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-                                        "like Gecko) Chrome/91.0.4472.124 Safari/537.36"}, params=None, timeout=10,
-            proxies=None
+                                        "like Gecko) Chrome/91.0.4472.124 Safari/537.36"}, params=None,
+            proxies=None, timeout=TIMEOUT
         )
 
     @patch('scraper.utils.requests.get')
@@ -48,35 +49,31 @@ class TestModule(unittest.TestCase):
         os.makedirs(output_dir, exist_ok=True)
         filepath = os.path.join(output_dir, 'test_image.jpg')
 
-        # Удалить файл, если он уже существует
         if os.path.exists(filepath):
             os.remove(filepath)
 
         download_image(pic_url, output_dir)
         self.assertTrue(os.path.exists(filepath))
 
-        # Очистка после теста
         if os.path.exists(filepath):
             os.remove(filepath)
 
     @patch('scraper.utils.requests.get')
     def test_download_image_404_error(self, mock_requests_get):
-        # Настройка мока для 404 ошибки
         mock_response = MagicMock()
         mock_response.status_code = 404
         mock_response.text = '404 Not Found'
+        mock_response.headers = {}
         mock_requests_get.return_value = mock_response
 
         pic_url = 'https://example.com/test_image.jpg'
         output_dir = 'test_output'
-
         download_image(pic_url, output_dir)
 
-        mock_requests_get.assert_called_with(pic_url)
+        mock_requests_get.assert_called_with(pic_url, stream=True)
 
     @patch('scraper.utils.requests.get')
     def test_download_image_no_filename(self, mock_requests_get):
-        # Настройка мока для случая, когда filename отсутствует
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.headers = {}
@@ -88,14 +85,12 @@ class TestModule(unittest.TestCase):
         os.makedirs(output_dir, exist_ok=True)
         filepath = os.path.join(output_dir, 'test_image.jpg')
 
-        # Удалить файл, если он уже существует
         if os.path.exists(filepath):
             os.remove(filepath)
 
         download_image(pic_url, output_dir)
         self.assertTrue(os.path.exists(filepath))
 
-        # Очистка после теста
         if os.path.exists(filepath):
             os.remove(filepath)
 
