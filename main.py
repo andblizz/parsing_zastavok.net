@@ -20,7 +20,7 @@ def main():
     try:
         print(f"Scraping images from page {args.start_page} to {args.end_page}...")
         scrape_images(args.start_page, args.end_page, args.output_dir)
-        print("Scraping completed successfully.")
+        print("Scraping completed successfully!")
     except Exception as e:
         print(f"An error occurred: {e}")
 
