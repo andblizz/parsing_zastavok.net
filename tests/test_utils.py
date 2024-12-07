@@ -45,6 +45,7 @@ class TestModule(unittest.TestCase):
         mock_requests_get.return_value = mock_response
 
         pic_url = 'https://example.com/test_image.jpg'
+
         output_dir = 'test_output'
         os.makedirs(output_dir, exist_ok=True)
         filepath = os.path.join(output_dir, 'test_image.jpg')
@@ -57,6 +58,7 @@ class TestModule(unittest.TestCase):
 
         if os.path.exists(filepath):
             os.remove(filepath)
+            os.rmdir(output_dir)
 
     @patch('scraper.utils.requests.get')
     def test_download_image_404_error(self, mock_requests_get):
@@ -68,9 +70,15 @@ class TestModule(unittest.TestCase):
 
         pic_url = 'https://example.com/test_image.jpg'
         output_dir = 'test_output'
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir, exist_ok=True)
         download_image(pic_url, output_dir)
 
         mock_requests_get.assert_called_with(pic_url, stream=True)
+
+        if os.path.exists(output_dir):
+            os.remove(output_dir + "/test_image.jpg")
+            os.rmdir(output_dir)
 
     @patch('scraper.utils.requests.get')
     def test_download_image_no_filename(self, mock_requests_get):
